@@ -1,0 +1,136 @@
+{% extends 'share/base.html' %}
+{% load humanize %}
+{% load render_partial %}
+{% load thumbnail %}
+
+{% block title %}
+Cars List
+{% endblock %}
+
+
+{% block content %}
+    <div class="sub-banner overview-bgi">
+    <div class="container breadcrumb-area">
+        <div class="breadcrumb-areas">
+            <h1>Our Car Inventory</h1>
+            <ul class="breadcrumbs">
+                <li><a href="">Home</a></li>
+                <li class="active">Cars</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    <div class="featured-car content-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-12">
+                <div class="row">
+                    {% for data in car %}
+                        <div class="col-lg-6 col-md-6">
+                        <div class="car-box-3">
+                            <div class="car-thumbnail">
+                                <a href="" class="car-img">
+
+                                    <div class="price-box">
+                                        <span>${{ data.price | intcomma }}</span>
+                                    </div>
+                                    {% thumbnail data.photo '750x500' crop='center' as im %}
+                                        <img class="d-block w-100" src="{{ im.url }}" alt="car">
+                                    {% endthumbnail %}
+                                </a>
+                                <div class="carbox-overlap-wrapper">
+                                    <div class="overlap-box">
+                                        <div class="overlap-btns-area">
+                                            <div class="car-magnify-gallery">
+                                            {% for images in data.carimages_set.all %}
+
+
+
+                                                {% thumbnail images.image '750x500' crop='center' as im2  %}
+                                                    <a href="{{ im2.url }}" class="{% if forloop.first %}overlap-btn{% endif %}">
+                                                {% endthumbnail %}
+                                                {% if forloop.first %}
+                                                    <i class="fa fa-expand"></i>
+                                                {% endif %}
+                                                {% thumbnail images.image '750x500' crop='center' as im3  %}
+                                                    <img class="hidden" src="{{ im3.url }}">
+                                                {% endthumbnail %}
+
+                                                </a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="detail">
+                                <h1 class="title">
+                                    <a href="{% url 'cars-detail-page' data.slug %}">{{ data.title }}</a>
+                                </h1>
+                                <div class="location">
+                                        <i class="flaticon-pin"></i>{{ data.state }}  {{ data.city }}
+                                </div>
+                                <ul class="facilities-list clearfix">
+                                    {% for features in data.features %}
+                                        <li>{{ features }}</li>
+                                    {% endfor %}
+
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!-- Page navigation start -->
+            <div class="pagination-box p-box-2 text-center">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                    <i class="fa fa-angle-left"></i></a></li>
+                            {% endif %}
+
+                            {% for pages in paginator.page_range %}
+                                <li class="page-item">
+                                    <a class="page-link {% if pages == page_obj.number %}active{% endif %}"
+                                       href="?page={{ pages }}">{{ pages }}</a>
+                                </li>
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="sidebar-right">
+                    <!-- Advanced search start -->
+                    <div class="widget advanced-search2">
+                        <h3 class="sidebar-title">Search your desire car</h3>
+                        {% render_partial 'cars.views.search_box' %}
+
+                    </div>
+                    <!-- Question start -->
+                    <div class="widget question widget-3">
+                        <h5 class="sidebar-title">Follow us</h5>
+                        <div class="social-list clearfix">
+                            <ul>
+                                <li><a href="#" class="facebook-bg"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="#" class="twitter-bg"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="#" class="google-bg"><i class="fa fa-google-plus"></i></a></li>
+                                <li><a href="#" class="rss-bg"><i class="fa fa-rss"></i></a></li>
+                                <li><a href="#" class="linkedin-bg"><i class="fa fa-linkedin"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

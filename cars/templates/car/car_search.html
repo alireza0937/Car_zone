@@ -1,0 +1,94 @@
+{% extends 'share/base.html' %}
+{% load thumbnail %}
+{% load humanize %}
+
+{% block title %}
+    Search Result
+{% endblock %}
+{% block content %}
+    <div class="sub-banner overview-bgi">
+    <div class="container breadcrumb-area">
+        <div class="breadcrumb-areas">
+            <h1>Search Results</h1>
+            <ul class="breadcrumbs">
+                <li><a href="index.html">Home</a></li>
+                <li class="active">Search</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    <div class="featured-car content-area">
+    <div class="container">
+        <!-- Main title -->
+        <div class="main-title">
+            <h1>Here's your <span>Cars</span></h1>
+        </div>
+        <div class="row">
+            {% for response in data %}
+                <div class="col-lg-4 col-md-6">
+                <div class="car-box">
+                    <div class="car-thumbnail">
+                        <a href="" class="car-img">
+                            <div class="tag">For Sale</div>
+                            {% thumbnail response.photo '750x500' crop='center' as im %}
+                                <img class="d-block w-100" src="{{ im.url }}" alt="car">
+                            {% endthumbnail %}
+                            <div class="facilities-list clearfix">
+                                <ul>
+                                    <li>
+                                        <span><i class="flaticon-way"></i></span>{{ response.miles |intcomma }} km
+                                    </li>
+                                    <li>
+                                        <span><i class="flaticon-calendar-1"></i></span>{{ response.year }}
+                                    </li>
+                                    <li>
+                                        <span><i class="flaticon-manual-transmission"></i></span>{{ response.transmission }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </a>
+                        <div class="carbox-overlap-wrapper">
+                            <div class="overlap-box">
+                                <div class="overlap-btns-area">
+                                    <div class="car-magnify-gallery">
+                                        {% for images in response.carimages_set.all %}
+                                        {% thumbnail images.image '750x500' crop='center' as im2 %}
+                                            <a href="{{ im2.url }}"
+                                               class="{% if forloop.first %}overlap-btn{% endif %}">
+                                            {% if forloop.first %}
+                                                <i class="fa fa-expand"></i>
+                                            {% endif %}
+                                                {% thumbnail images.image '750x500' crop='center' as im2 %}
+                                                    <img class="hidden" src="{{ im2.url }}">
+                                                {% endthumbnail %}
+                                            </a>
+                                        {% endthumbnail %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail">
+                        <h1 class="title">
+                            <a href="{% url 'cars-detail-page' response.slug %}">{{ response.title }}</a>
+                        </h1>
+                        <div class="location">
+                                <i class="flaticon-pin"></i>{{ response.state }}  {{ response.city }}
+                        </div>
+                    </div>
+                    <div class="footer clearfix">
+                        <div class="pull-left ratings days">
+                            <p class="cartype">{{ response.body_style }}</p>
+                        </div>
+                        <div class="pull-right">
+                            <p class="price">${{ response.price | intcomma }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

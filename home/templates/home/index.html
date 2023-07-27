@@ -1,0 +1,258 @@
+{% extends 'share/base.html' %}
+{% load humanize %}
+{% load thumbnail %}
+    {% block title %}
+        Home
+    {% endblock %}
+{% block content %}
+<div class="banner" id="banner">
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner banner-slider-inner text-center">
+            {% for sliders in slider %}
+                <div class="carousel-item banner-max-height {% if forloop.first %} active {% endif %} item-bg">
+                {% thumbnail sliders.banner '1920x1080' crop='center' as im %}
+                    <img src="{{ im.url }}" alt="banner">
+                {% endthumbnail %}
+                    <div class="carousel-content container banner-info-2 bi-2 text-left">
+                        <h3>{{ sliders.title }}</h3>
+                        <h5>{{ sliders.description }}</h5>
+                        <a href="{{ sliders.url }}" class="btn btn-lg btn-theme">Read more</a>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+        <!-- Search box 3 start -->
+
+        <!-- Search box 3 end -->
+        <a class="carousel-control-prev none-580" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="slider-mover-left" aria-hidden="true">
+                <i class="fa fa-angle-left"></i>
+            </span>
+        </a>
+        <a class="carousel-control-next none-580" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="slider-mover-right" aria-hidden="true">
+                <i class="fa fa-angle-right"></i>
+            </span>
+        </a>
+    </div>
+</div>
+<!-- Featured car start -->
+<div class="featured-car content-area-5">
+    <div class="container">
+        <!-- Main title -->
+        <div class="main-title">
+            <h1>Featured <span>Cars</span></h1>
+
+        </div>
+        <!-- Slick slider area start -->
+        <div class="slick-slider-area clearfix">
+            <div class="row slick-carousel" data-slick='{"slidesToShow": 3, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": 2}}, {"breakpoint": 768,"settings":{"slidesToShow": 1}}]}'>
+                {% for cars in featured_cars %}
+                    <div class="slick-slide-item">
+                    <div class="car-box-3">
+                        <div class="car-thumbnail">
+                            <a href="" class="car-img">
+                                <div class="tag-2">Featured</div>
+                                <div class="price-box">
+                                    <span>${{ cars.price | intcomma }}</span>
+                                </div>
+                                {% thumbnail cars.photo '750x750' crop='center' as im %}
+                                    <img class="d-block w-100" src="{{ im.url }}" alt="car">
+                                {% endthumbnail %}
+                            </a>
+                            <div class="carbox-overlap-wrapper">
+                                <div class="overlap-box">
+                                    <div class="overlap-btns-area">
+                                        <div class="car-magnify-gallery">
+                                        {% for images in cars.carimages_set.all %}
+                                            {% thumbnail images.image '750x500' crop='center' as im2 %}
+                                            <a href="{{ im2.url }}"
+                                               class="{% if forloop.first %}overlap-btn{% endif %} hidden">
+                                            {% endthumbnail %}
+                                            {% if forloop.first %}
+                                                <i class="fa fa-expand"></i>
+                                            {% endif %}
+                                                {% thumbnail images.image '750x500' crop='center' as im2 %}
+                                                <img class="hidden" src="{{ im2.url }}">
+                                                {% endthumbnail %}
+                                            {% endfor %}
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail">
+                            <h1 class="title">
+                                <a href="{% url 'cars-detail-page' cars.slug %}">{{ cars.title }}</a>
+                            </h1>
+                            <div class="location">
+
+                                    <i class="flaticon-pin"></i>{{ cars.state }} - {{ cars.city }}
+
+                            </div>
+                            <ul class="facilities-list clearfix">
+                                <li>{{ cars.fuel_type }}</li>
+                                <li>{{ cars.miles | intcomma }} km</li>
+                                <li>{{ cars.transmission }}</li>
+                                <li>{{ cars.body_style }}</li>
+                                <li>{{ cars.color }}</li>
+                                <li>{{ cars.year }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+            <div class="slick-btn">
+                <div class="slick-prev slick-arrow-buton sab-4">
+                    <i class="fa fa-angle-left"></i>
+                </div>
+                <div class="slick-next slick-arrow-buton sab-3">
+                    <i class="fa fa-angle-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Featured car end -->
+
+<!-- Rent car start -->
+<div class="featured-car content-area">
+    <div class="container">
+        <!-- Main title -->
+        <div class="main-title">
+            <h1>Latest <span>Cars</span></h1>
+        </div>
+        <div class="row">
+            {% for cars in all_cars %}
+                <div class="col-lg-4 col-md-6">
+                <div class="car-box">
+                    <div class="car-thumbnail">
+                        <a href="" class="car-img">
+                            <div class="tag">For Sale</div>
+                            {% thumbnail cars.photo '750x500' crop='center' as im %}
+                            <img class="d-block w-100" src="{{ im.url }}" alt="car">
+                            {% endthumbnail %}
+                            <div class="facilities-list clearfix">
+                                <ul>
+                                    <li>
+                                        <span><i class="flaticon-way"></i></span>{{ cars.miles | intcomma }} km
+                                    </li>
+                                    <li>
+                                        <span><i class="flaticon-calendar-1"></i></span>{{ cars.year }}
+                                    </li>
+                                    <li>
+                                        <span><i class="flaticon-manual-transmission"></i></span>{{ cars.transmission }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </a>
+                        <div class="carbox-overlap-wrapper">
+                            <div class="overlap-box">
+                                <div class="overlap-btns-area">
+                                    <div class="car-magnify-gallery">
+                                    {% for car in cars.carimages_set.all %}
+                                        {% thumbnail car.image '750x500' crop='center' as im3 %}
+                                        <a href="{{ im3.url }}" class="{% if forloop.first %}overlap-btn{% endif %}">
+                                        {% endthumbnail %}
+                                        {% if forloop.first %}
+                                            <i class="fa fa-expand"></i>
+                                        {% endif %}
+                                        {% thumbnail car.image '750x500' crop='center' as im3 %}
+                                            <img class="hidden" src="{{ im3.url }}">
+                                        {% endthumbnail %}
+                                        </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail">
+                        <h1 class="title">
+                            <a href="{% url 'cars-detail-page' cars.slug %}">{{ cars.title }}</a>
+                        </h1>
+                        <div class="location">
+                            <a href="">
+                                <i class="flaticon-pin"></i>{{ cars.state }} - {{ cars.city }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="footer clearfix">
+                        <div class="pull-left ratings days">
+                            <p class="cartype">{{ cars.body_style }}</p>
+                        </div>
+                        <div class="pull-right">
+                            <p class="price">${{ cars.price | intcomma }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+<!-- Rent car end -->
+
+
+<!-- Our team start -->
+<div class="our-team content-area bg-grea-3">
+    <div class="container">
+        <!-- Main title -->
+        <div class="main-title">
+            <h1>Executive <span>Team</span></h1>
+        </div>
+        <!-- Slick slider area start -->
+        <div class="slick-slider-area clearfix">
+            <div class="row slick-carousel" data-slick='{"slidesToShow": 4, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": 2}}, {"breakpoint": 768,"settings":{"slidesToShow": 1}}]}'>
+            {% for members in all_members %}
+                <div class="slick-slide-item">
+                    <div class="team-1">
+                        <div class="photo">
+                            <a href="#">
+                                {% thumbnail members.photo "800x800" crop="center" as im %}
+                                    <img src="{{ im.url }}" alt="team-1" class="img-fluid">
+                                {% endthumbnail %}
+                            </a>
+                            <div class="social-list clearfix">
+                                <a href="{{ members.facebook_link }}" class="facebook-bg"><i class="fa fa-facebook"></i></a>
+                                <a href="{{ members.twitter_link }}" class="twitter-bg"><i class="fa fa-twitter"></i></a>
+                                <a href="{{ members.google_plus_link }}" class="google-bg"><i class="fa fa-google"></i></a>
+                            </div>
+                        </div>
+                        <div class="details">
+                            <h4><a href="">{{ members.first_name }} {{ members.last_name }}</a></h4>
+                            <h5>{{ members.position }}</h5>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Our team end -->
+
+<!-- Intro section start -->
+<div class="intro-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 col-md-8 col-sm-12">
+                <div class="intro-text">
+                    <h3>Do You Have Questions ?</h3>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-12">
+                <a href="" class="btn btn-md">Get in Touch</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Intro section end -->
+
+{% endblock %}

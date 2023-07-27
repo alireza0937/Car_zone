@@ -1,0 +1,38 @@
+{% load render_partial %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    {% include 'share/header_ref.html' %}
+</head>
+<body>
+<header class="top-header th-2 top-header-bg">
+    {% render_partial 'home.views.header_components' %}
+
+
+</header>
+
+<header class="main-header sticky-header header-with-top">
+    {% render_partial 'home.views.header_components2' %}
+</header>
+{% block content %}
+{% endblock %}
+
+<footer class="footer">
+    {% render_partial 'home.views.footer_components' %}
+</footer>
+<div id="full-page-search">
+    <button type="button" class="close">×</button>
+    <form action="{% url 'search-car-page' %}" class="search-header">
+        <input type="search" value="" placeholder="type keyword(s) here. Eg: audi, benz etc" name="keyword" />
+        <button type="submit" class="btn btn-sm button-theme">Search</button>
+    </form>
+</div>
+{% include 'share/footer_ref.html' %}
+</body>
+</html>
