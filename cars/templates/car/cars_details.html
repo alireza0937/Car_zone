@@ -196,7 +196,7 @@
                                     {% if request.user.is_authenticated %}
                                         <input type="hidden" name="user_id" class="form-control" value="{{ request.user.id }}">
                                     {% else %}
-                                        <input type="hidden" name="user_id" class="form-control" value="0">
+                                        <input type="hidden" name="user_id" class="form-control" >
                                     {% endif %}
 
                                 </div>
@@ -239,9 +239,13 @@
                         </div>
                       </div>
                     </div>
+                {% if messages %}
+                    <div class="alert alert-success">
                         {% for message in messages %}
-                            <alert>{{ message }}</alert>
+                           <p>{{ message }}</p>
                         {% endfor %}
+                    </div>
+                {% endif %}
                     <!-- Question start -->
                     <div class="widget question">
                         <h5 class="sidebar-title">Get a Question?</h5>
