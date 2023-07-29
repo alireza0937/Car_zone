@@ -1,12 +1,35 @@
+from django.contrib import messages
 from django.http import HttpRequest
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
 from cars.models import Cars
+from contact.models import Contacts
 
 
-def save_customers_inquiry():
-    pass
+def save_customers_inquiry(request):
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    user_id = request.POST.get('user_id')
+    customer_need = request.POST.get('customer_need')
+    car_title = request.POST.get('car_title')
+    city = request.POST.get('city')
+    state = request.POST.get('state')
+    email = request.POST.get('email')
+    phone = request.POST.get('phone')
+    message = request.POST.get('message')
+    entered_info = Contacts(car_title_id=car_title,
+                            user_id_id=user_id,
+                            first_name=first_name,
+                            last_name=last_name,
+                            city=city,
+                            state=state,
+                            email=email,
+                            phone_number=phone,
+                            subject=customer_need,
+                            description=message)
+    entered_info.save()
 
 
 class CarsListView(ListView):
@@ -26,7 +49,10 @@ class CarsDetailView(DetailView):
     context_object_name = 'car'
 
     def post(self, request: HttpRequest, slug):
-        print(request.POST.get('email'))
+
+        save_customers_inquiry(request)
+        messages.success(request, 'Your feedback successfully saved')
+        return redirect('cars-detail-page',slug=slug)
 
 
 class SearchCars(View):

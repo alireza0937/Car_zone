@@ -169,7 +169,6 @@
                             </button>
                           </div>
                           <div class="modal-body">
-{#                              {% render_partial 'contact.views.Inquiry' %}#}
                               <form action="{% url 'cars-detail-page' car.slug %}" method="post">
                                 {% csrf_token %}
                                 <div class="form-group">
@@ -193,7 +192,13 @@
                                     </div>
 
                                 <div class="form-group">
-                                  <input type="hidden" name="car_title" class="form-control" value="{{ car.title }}">
+                                  <input type="hidden" name="car_title" class="form-control" value="{{ car.id }}">
+                                    {% if request.user.is_authenticated %}
+                                        <input type="hidden" name="user_id" class="form-control" value="{{ request.user.id }}">
+                                    {% else %}
+                                        <input type="hidden" name="user_id" class="form-control" value="0">
+                                    {% endif %}
+
                                 </div>
 
                                 <div class="form-group">
@@ -229,10 +234,14 @@
                                 <input type="submit" value="Send" class="btn btn-block btn-danger">
                             </form>
 
+
                           </div>
                         </div>
                       </div>
                     </div>
+                        {% for message in messages %}
+                            <alert>{{ message }}</alert>
+                        {% endfor %}
                     <!-- Question start -->
                     <div class="widget question">
                         <h5 class="sidebar-title">Get a Question?</h5>

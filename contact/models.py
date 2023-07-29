@@ -1,6 +1,7 @@
 from django.db import models
 from cars.models import Cars
 from user.models import User
+from django import forms
 
 
 class Contacts(models.Model):
@@ -12,6 +13,7 @@ class Contacts(models.Model):
     state = models.CharField(max_length=150)
     email = models.EmailField()
     phone_number = models.CharField(blank=True, null=True, max_length=100)
+    subject = models.CharField(max_length=500)
     description = models.TextField()
     create_date = models.DateField(auto_now_add=True)
     response = models.TextField(blank=True, null=True)
@@ -23,3 +25,9 @@ class Contacts(models.Model):
     class Meta:
         verbose_name_plural = 'Contacts'
         db_table = 'Contacts'
+
+
+class ContactModelForm(forms.ModelForm):
+    class Meta:
+        model = Contacts
+        fields = '__all__'
