@@ -7,6 +7,15 @@ from cars.models import Cars
 from contact.models import Contacts
 
 
+def check_had_inquired(request, user_id, car_id):
+    if not Contacts.objects.filter(user_id_id=user_id, car_title_id=car_id).exists():
+        save_permission = True
+    else:
+        save_permission = False
+    return_message(request, save_permission)
+    return save_permission
+
+
 def save_customers_inquiry(request):
     first_name = request.POST.get('first_name')
     last_name = request.POST.get('last_name')
@@ -18,17 +27,26 @@ def save_customers_inquiry(request):
     email = request.POST.get('email')
     phone = request.POST.get('phone')
     message = request.POST.get('message')
-    entered_info = Contacts(car_title_id=car_title,
-                            user_id_id=user_id,
-                            first_name=first_name,
-                            last_name=last_name,
-                            city=city,
-                            state=state,
-                            email=email,
-                            phone_number=phone,
-                            subject=customer_need,
-                            description=message)
-    entered_info.save()
+    response = check_had_inquired(request, user_id, car_title)
+    if response:
+        entered_info = Contacts(car_title_id=car_title,
+                                user_id_id=user_id,
+                                first_name=first_name,
+                                last_name=last_name,
+                                city=city,
+                                state=state,
+                                email=email,
+                                phone_number=phone,
+                                subject=customer_need,
+                                description=message)
+        entered_info.save()
+
+
+def return_message(request, permission):
+    if permission:
+        messages.success(request, 'Successfully added.')
+    else:
+        messages.error(request, 'You have already inquired about this car.')
 
 
 class CarsListView(ListView):
@@ -49,7 +67,6 @@ class CarsDetailView(DetailView):
 
     def post(self, request: HttpRequest, slug):
         save_customers_inquiry(request)
-        messages.success(request, 'Your feedback successfully saved')
         return redirect('cars-detail-page', slug=slug)
 
 
