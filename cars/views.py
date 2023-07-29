@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
 from cars.models import Cars
@@ -49,10 +48,9 @@ class CarsDetailView(DetailView):
     context_object_name = 'car'
 
     def post(self, request: HttpRequest, slug):
-
         save_customers_inquiry(request)
         messages.success(request, 'Your feedback successfully saved')
-        return redirect('cars-detail-page',slug=slug)
+        return redirect('cars-detail-page', slug=slug)
 
 
 class SearchCars(View):
