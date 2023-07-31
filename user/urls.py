@@ -8,6 +8,7 @@ urlpatterns = [
     path('logout', views.logout_button, name='logout-link'),
     path('user_panel', views.logout_button, name='user_panel-page'),
     path('forget-password', views.ForgetPassWordView.as_view(), name='forget-password-page'),
+    path('activate/<uidb64>/<token>', views.activate, name='activate')
 
 
 

@@ -1,14 +1,40 @@
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from django.views import View
 from user.forms import RegistrationModelForm
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from .models import User
 from config.settings import EMAIL_HOST_USER
 from django.utils.crypto import get_random_string
+from .token import account_activation_token
+
+
+def activate(request, uidb64, token):
+    return redirect('index-page')
+
+
+def send_activation_code_to_email(request: HttpRequest, user, to_email):
+    mail_subject = 'Activate Your Account'
+    message = render_to_string(template_name='user/activate_account.html', context={
+        'user': user.username,
+        'domain': get_current_site(request).domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+        'protocol': 'https' if request.is_secure() else 'http'
+
+    })
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    if email.send():
+        messages.success(request, "activation code has been sent to your email")
+    else:
+        messages.error(request, "Email didn't sent.")
 
 
 def send_activation_code(user):
@@ -29,8 +55,7 @@ class RegisterView(View):
         if register_form.is_valid():
             register_form.save()
             user_details = User.objects.get(email=request.POST.get('email'))
-            send_activation_code(user_details)
-            messages.success(request, "activation code has been sent to your email")
+            send_activation_code_to_email(request, user_details, user_details.email)
             return redirect(reverse('login-page'))
 
         register_form = RegistrationModelForm()
@@ -94,5 +119,3 @@ class ForgetPassWordView(View):
 
         messages.error(request, 'The Email Is Incorrect.')
         return redirect(reverse('forget-password-page'))
-
-

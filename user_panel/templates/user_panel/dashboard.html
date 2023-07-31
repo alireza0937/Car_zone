@@ -1,21 +1,21 @@
 {% extends 'share/base.html' %}
-
+{% load humanize %}
 {% block title %}
 Dashboard
 {% endblock %}
-
 {% block content %}
     <div class="sub-banner overview-bgi">
     <div class="container breadcrumb-area">
         <div class="breadcrumb-areas">
             <h1>Dashboard</h1>
             <ul class="breadcrumbs">
-                <li><a href="index.html">Home</a></li>
-                <li class="active">Username</li>
+                <li><a href="/">Home</a></li>
+                <li class="active">{{ user.username }}</li>
             </ul>
         </div>
     </div>
 </div>
+{% if all_inquires %}
     <div class="container mt-50 mb-50">
 	<div class="main-title" style="text-align:left !important;">
             <h1>Welcome <span>User</span></h1>
@@ -32,27 +32,22 @@ Dashboard
 		</tr>
 	  </thead>
 	  <tbody>
-		<tr>
-		  <th scope="row">1</th>
-		  <td>Lamborgini Huracan</td>
-		  <td>Austin</td>
-		  <td>$25000</td>
-		  <td><a href="#" class="btn btn-outline-dark">View Car</a></td>
+
+          {% for all_inquire in all_inquires %}
+        <tr>
+		  <th scope="row"></th>
+		  <td>{{ all_inquire.car_title }}</td>
+		  <td>{{ all_inquire.state }}</td>
+		  <td>${{ all_inquire.car_title.price | intcomma }}</td>
+		  <td><a href="{% url 'cars-detail-page' all_inquire.car_title.slug %}" class="btn btn-outline-dark">View Car</a></td>
 		</tr>
-		<tr>
-		  <th scope="row">2</th>
-		  <td>Lamborgini Huracan</td>
-		  <td>Austin</td>
-		  <td>$25000</td>
-		  <td><a href="#" class="btn btn-outline-dark">View Car</a></td>
-		</tr>
-		<tr>
-		  <th scope="row">3</th>
-		  <td>Lamborgini Huracan</td>
-		  <td>Austin</td>
-		  <td>$25000</td>
-		  <td><a href="#" class="btn btn-outline-dark">View Car</a></td>
-		</tr>
+      {% endfor %}
+      {% else %}
+    <div class="alert alert-warning" height="1500px">
+        <center><p>You have no inquiry yet</p></center>
+    </div>
+
+      {% endif %}
 	  </tbody>
 	</table>
 </div>

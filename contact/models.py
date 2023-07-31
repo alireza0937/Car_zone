@@ -31,3 +31,8 @@ class ContactModelForm(forms.ModelForm):
     class Meta:
         model = Contacts
         fields = '__all__'
+
+
+class SiteContacts(models.Model):
+    pass
+
