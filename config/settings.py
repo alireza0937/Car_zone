@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'user_panel',
 
-
 ]
 
 MIDDLEWARE = [
@@ -108,12 +107,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = BASE_DIR / 'uploads'
 AUTH_USER_MODEL = 'user.User'
 MEDIA_URL = '/media/'
+LOGIN_URL = '/user/login'
+# Email
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_FROM = env('EMAIL_USERNAME')
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = env('EMAIL_USERNAME')
 EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
+PASSWORD_RESET_TIMEOUT = 14400
 # AUTHENTICATION_BACKENDS = [
 #     'django.contrib.auth.backends.ModelBackend',
 #     'allauth.account.auth_backends.AuthenticationBackend',
