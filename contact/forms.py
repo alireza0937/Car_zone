@@ -24,6 +24,7 @@ class ContactModelForm(forms.ModelForm):
                 'placeholder': 'Phone Number'
             }),
             'message': forms.Textarea(attrs={
-                'placeholder': 'Write Your Message'
+                'placeholder': 'Write Your Message',
+                'style': 'width: 700px; height: 100px;'
             })
         }
