@@ -33,6 +33,16 @@ class ContactModelForm(forms.ModelForm):
         fields = '__all__'
 
 
-class SiteContacts(models.Model):
-    pass
+class SiteContact(models.Model):
+    fullname = models.CharField(max_length=250)
+    email = models.EmailField()
+    subject = models.CharField(max_length=100)
+    phone = models.CharField(max_length=100)
+    message = models.TextField()
 
+    class Meta:
+        verbose_name_plural = 'SiteContact'
+        db_table = 'SiteContact'
+
+    def __str__(self):
+        return self.subject
