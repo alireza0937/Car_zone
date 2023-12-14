@@ -107,7 +107,7 @@ class Cars(models.Model):
     passenger = models.IntegerField()
     vin_no = models.CharField(max_length=100)
     fuel_type = models.CharField(max_length=100)
-    no_of_owner = models.CharField(max_length=100,blank=True, null=True)
+    no_of_owner = models.CharField(max_length=100, blank=True, null=True)
     is_featured = models.BooleanField()
     created_date = models.DateField(auto_now_add=True)
     slug = models.SlugField(unique=True, editable=False, db_index=True, max_length=200)

@@ -1,10 +1,12 @@
 from django.contrib import messages
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import ListView, DetailView
 from cars.models import Cars
 from contact.models import Contacts
+import MySQLdb
+
 
 
 def check_had_inquired(request, user_id, car_id):
@@ -72,19 +74,11 @@ class CarsDetailView(DetailView):
 
 class SearchCars(View):
     def get(self, request: HttpRequest):
-
         searched_word = request.GET.get('keyword')
-        searched_Condition = request.GET.get('Condition')
-        searched_location = request.GET.get('location')
-        searched_year = request.GET.get('year')
-        searched_category = request.GET.get('category')
-        if searched_word is not None:
-            search_response = Cars.objects.filter(title__icontains=searched_word).all()
-            return render(request, 'car/car_search.html', context={
-                'data': search_response
-            })
-        else:
-            print(searched_word, searched_Condition, searched_location, searched_year, searched_category)
+        search_response = Cars.objects.filter(title__icontains=searched_word).all()
+        return render(request, 'car/car_search.html', context={
+            'data': search_response
+        })
 
 
 def search_box(request: HttpRequest):
@@ -101,3 +95,16 @@ def search_box(request: HttpRequest):
         'location': location
     }
     return render(request, 'car/include/search_box.html', context=data)
+
+
+def shayan_test(request:HttpRequest):
+    dbconnect = MySQLdb.connect("localhost", "root", "pegah", "car_zonedb")
+
+    cursor = dbconnect.cursor()
+    cursor.execute("SELECT * from Cars")
+
+    data = cursor.fetchone()
+
+    dbconnect.close()
+    return JsonResponse({'data': data})
+    # return HttpResponse(print())

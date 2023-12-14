@@ -1,5 +1,5 @@
 from django.contrib.sites.shortcuts import get_current_site
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -14,6 +14,7 @@ from .models import User
 from config.settings import EMAIL_HOST_USER
 from django.utils.crypto import get_random_string
 from .token import account_activation_token
+import redis
 
 
 def activate(request, uidb64, token):
@@ -84,6 +85,14 @@ class LoginView(View):
     def post(self, request: HttpRequest):
         username = request.POST.get('username')
         password = request.POST.get('Password')
+        connection = redis.Redis(host='localhost', port=6379, decode_responses=True)
+        client_ip = request.META.get("REMOTE_ADDR")
+        if connection.exists(client_ip):
+            connection.incr(client_ip)
+        else:
+            connection.set(client_ip, 1, 20)
+        if int(connection.get(client_ip)) > 5:
+            return HttpResponse(status=403)
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user=user)
